@@ -18,8 +18,8 @@ class PortalCustomer(http.Controller):
         }
         current_url = request.httprequest.path
         if current_url == '/my/home' or current_url == '/my/orders':
-            user = request.env.user
-            sale_orders = request.env['sale.order'].search([('partner_id', '=', request.env.user.id)])
+
+            sale_orders = request.env['sale.order'].search([('user_id', '=', request.env.user.id)])
 
             orders = []
             for sale_order in sale_orders:
