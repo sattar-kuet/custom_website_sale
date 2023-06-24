@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_order_tree" model="ir.ui.view">
+        <field name="name">sale.order.tree.inherit.website.sale</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='website_id']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='user_id']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='invoice_status']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='name']" position="after">
+                <field name="order_line" widget="many2many_tags" options="{'no_create': True, 'no_quick_create': True}"/>
+            </xpath>
+            <xpath expr="//field[@name='amount_total']" position="after">
+                <field name="delivery_status" optional="show"/>
+            </xpath>
+            <xpath expr="//field[@name='partner_id']" position="after">
+                <field name="customer_phone" optional="show"/>
+
+            </xpath>
+        </field>
+    </record>
+
+    <record id="model_sale_order_action_confirmed" model="ir.actions.server">
+        <field name="name">Mark as confirmed</field>
+        <field name="model_id" ref="custom_website_sale.model_sale_order"/>
+        <field name="binding_model_id" ref="custom_website_sale.model_sale_order"/>
+        <field name="binding_view_types">form,list</field>
+        <field name="state">code</field>
+        <field name="code">action = records.action_confirmed()</field>
+    </record>
+    <record id="model_sale_order_action_packaging_done" model="ir.actions.server">
+        <field name="name">Mark as packaging done</field>
+        <field name="model_id" ref="custom_website_sale.model_sale_order"/>
+        <field name="binding_model_id" ref="custom_website_sale.model_sale_order"/>
+        <field name="binding_view_types">form,list</field>
+        <field name="state">code</field>
+        <field name="code">action = records.action_packaging_done()</field>
+    </record>
+
+    <record id="model_sale_order_action_on_the_way" model="ir.actions.server">
+        <field name="name">Mark as on the way</field>
+        <field name="model_id" ref="custom_website_sale.model_sale_order"/>
+        <field name="binding_model_id" ref="custom_website_sale.model_sale_order"/>
+        <field name="binding_view_types">form,list</field>
+        <field name="state">code</field>
+        <field name="code">action = records.action_on_the_way()</field>
+    </record>
+    <record id="model_sale_order_action_delivered" model="ir.actions.server">
+        <field name="name">Mark as delivered</field>
+        <field name="model_id" ref="custom_website_sale.model_sale_order"/>
+        <field name="binding_model_id" ref="custom_website_sale.model_sale_order"/>
+        <field name="binding_view_types">form,list</field>
+        <field name="state">code</field>
+        <field name="code">action = records.action_delivered()</field>
+    </record>
+
+    <template id="bs_portal_layout" inherit_id="portal.portal_layout" >
+        <xpath expr="//div[@class='o_portal_wrap']" position="replace">
+            <div class="o_portal_wrap">
+                <div class="container mb64">
+                    <div class="row">
+                        <div id="portal_sidebar" class="col-md-3">
+                            <div class="sidebar">
+                                <div class="sidebar-header">
+
+                                    <div class="portal_user">
+                                        <h2>Hello,</h2>
+                                        <h2><t t-esc="user.get('name')"/></h2>
+                                    </div>
+                                </div>
+                                <ul class="menu">
+                                    <li class="menu-item">
+                                        <a href="/my/orders" t-att-class="{'active': request.httprequest.path == '/my/orders' or request.httprequest.path == '/my/home'}">My Orders</a>
+                                    </li>
+                                    <!--                                    <li class="menu-item" t-att-class="{'active': request.httprequest.path == '/my/offer'}">-->
+                                    <!--                                        <a href="/my/offer">My Offer</a>-->
+                                    <!--                                    </li>-->
+                                    <!-- Add more menu items as needed -->
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div id="portal_content" class="col-md-9">
+                            <t t-if="request.httprequest.path == '/my/home' or request.httprequest.path == '/my/orders' ">
+                                <t t-if="orders">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th>Reference#</th>
+                                                <th style="width:136px;">Order Placed at</th>
+                                                <th>Book</th>
+                                                <th style="width:136px;">Total Amount</th>
+                                                <th style="width:136px;">Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <t t-foreach="orders" t-as="order">
+                                                <tr>
+                                                    <td><t t-esc="order.get('reference')"/></td>
+                                                    <td><t t-esc="order.get('created_date')"/></td>
+                                                    <td>
+                                                        <ul t-if="order.get('products')">
+                                                            <t t-foreach="order.get('products')" t-as="product">
+                                                                <li>
+                                                                    <!--                                                                    <img t-if="product.get('image')" t-att-src="product.get('image')"/>-->
+                                                                    <t t-esc="product.get('name')"/> By
+                                                                    <t t-esc="product.get('author')"/> X
+                                                                    <t t-esc="product.get('quantity')"/>
+                                                                </li>
+                                                            </t>
+                                                        </ul>
+
+                                                    </td>
+                                                    <td><t t-esc="order.get('amount_total')"/>৳ </td>
+                                                    <td><t t-esc="order.get('status')"/></td>
+                                                </tr>
+                                            </t>
+                                        </tbody>
+                                    </table>
+                                </t>
+                                <t t-else="">
+                                    <div>No orders available</div>
+                                </t>
+                            </t>
+
+                            <t t-elif="request.httprequest.path == '/my/offer'">
+                                <!-- Content for the /my/account URL -->
+                                <div>Offer</div>
+                            </t>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </xpath>
+    </template>
+
+    <template id="custom_report_saleorder">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="custom_website_sale.custom_report_saleorder_document" />
+            </t>
+        </t>
+    </template>
+
+    <template id="custom_report_saleorder_document">
+        <t t-call="web.external_layout">
+            <t t-set="doc" t-value="doc.with_context(lang=doc.partner_id.lang)" />
+            <t t-set="address">
+                <h2>To</h2>
+                <span t-esc="doc.partner_id.name"/>,<br/>
+                <span t-esc="doc.partner_id.phone"/>,<br/>
+                <span t-esc="doc.partner_id.street"/>,<br/>
+                <span t-esc="doc.partner_id.state_id.name"/>,<br/>
+                <span t-esc="doc.partner_id.city"/>,<br/>
+                <span t-esc="doc.partner_id.country_id.name"/>
+            </t>
+
+            <div class="page">
+                <div class="oe_structure"/>
+                <h2 class="mt16">
+                    <span>Order # </span>
+                    <span t-field="doc.name"/>
+                </h2>
+
+                <div class="row mt32 mb32" id="informations">
+                    <div t-if="doc.date_order and doc.state not in ['draft','sent']" class="col-auto col-3 mw-100 mb-2">
+                        <strong>Order Date:</strong>
+                        <p class="m-0" t-field="doc.date_order"/>
+                    </div>
+                    <div t-if="doc.date_order and doc.state in ['draft','sent']" class="col-auto col-3 mw-100 mb-2">
+                        <strong>Quotation Date:</strong>
+                        <p class="m-0" t-field="doc.date_order" t-options='{"widget": "date"}'/>
+                    </div>
+                </div>
+                <!-- Is there a discount on at least one line? -->
+                <t t-set="display_discount" t-value="any(l.discount for l in doc.order_line)"/>
+
+                <table class="table table-sm o_main_table">
+                    <!-- In case we want to repeat the header, remove "display: table-row-group" -->
+                    <thead style="display: table-row-group">
+                        <tr>
+                            <th name="th_description" class="text-left">Product</th>
+                            <th name="th_quantity" class="text-right">Quantity</th>
+                            <th name="th_priceunit" class="text-right">Unit Price</th>
+                            <th name="th_discount" t-if="display_discount" class="text-right" groups="product.group_discount_per_so_line">
+                                <span>Disc.%</span>
+                            </th>
+
+                            <th name="th_subtotal" class="text-right">
+                                <span groups="account.group_show_line_subtotals_tax_excluded">Amount</span>
+                                <span groups="account.group_show_line_subtotals_tax_included">Total Price</span>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="sale_tbody">
+
+                        <t t-set="current_subtotal" t-value="0"/>
+
+                        <t t-foreach="doc.order_line" t-as="line">
+
+                            <t t-set="current_subtotal" t-value="current_subtotal + line.price_subtotal" groups="account.group_show_line_subtotals_tax_excluded"/>
+                            <t t-set="current_subtotal" t-value="current_subtotal + line.price_total" groups="account.group_show_line_subtotals_tax_included"/>
+
+                            <tr t-att-class="'bg-200 font-weight-bold o_line_section' if line.display_type == 'line_section' else 'font-italic o_line_note' if line.display_type == 'line_note' else ''">
+                                <t t-if="not line.display_type">
+                                    <td name="td_name"><span t-field="line.name"/></td>
+                                    <td name="td_quantity" class="text-right">
+                                        <span t-field="line.product_uom_qty"/>
+                                        <span t-field="line.product_uom"/>
+                                    </td>
+                                    <td name="td_priceunit" class="text-right">
+                                        <span t-field="line.price_unit"/>
+                                    </td>
+                                    <td t-if="display_discount" class="text-right" groups="product.group_discount_per_so_line">
+                                        <span t-field="line.discount"/>
+                                    </td>
+
+                                    <td name="td_subtotal" class="text-right o_price_total">
+                                        <span t-field="line.price_subtotal" groups="account.group_show_line_subtotals_tax_excluded"/>
+                                        <span t-field="line.price_total" groups="account.group_show_line_subtotals_tax_included"/>
+                                    </td>
+                                </t>
+                                <t t-if="line.display_type == 'line_section'">
+                                    <td name="td_section_line" colspan="99">
+                                        <span t-field="line.name"/>
+                                    </td>
+                                    <t t-set="current_section" t-value="line"/>
+                                    <t t-set="current_subtotal" t-value="0"/>
+                                </t>
+                                <t t-if="line.display_type == 'line_note'">
+                                    <td name="td_note_line" colspan="99">
+                                        <span t-field="line.name"/>
+                                    </td>
+                                </t>
+                            </tr>
+
+                            <t t-if="current_section and (line_last or doc.order_line[line_index+1].display_type == 'line_section')">
+                                <tr class="is-subtotal text-right">
+                                    <td name="td_section_subtotal" colspan="99">
+                                        <strong class="mr16">Subtotal</strong>
+                                        <span
+                                                t-esc="current_subtotal"
+                                                t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'
+                                        />
+                                    </td>
+                                </tr>
+                            </t>
+                        </t>
+                    </tbody>
+                </table>
+            </div>
+        </t>
+    </template>
+
+    <record id="paperformat_package_label" model="report.paperformat">
+       <field name="name"> Parcel Level Paper Format</field>
+        <field name="format">A4</field>
+        <field name="orientation">Portrait</field>
+        <field name="page_height">0</field>
+        <field name="page_width">0</field>
+        <field name="margin_top">2</field>
+        <field name="margin_right">5</field>
+        <field name="margin_bottom">2</field>
+        <field name="margin_left">5</field>
+        <field name="header_spacing">0</field>
+    </record>
+
+    <record id="custom_report_saleorder" model="ir.actions.report">
+        <field name="name">Print Label For packaging</field>
+        <field name="model">sale.order</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">custom_website_sale.custom_report_saleorder</field>
+        <field name="report_file">custom_website_sale.custom_report_saleorder</field>
+        <field name="print_report_name">(object.state in ('draft', 'sent') and 'Quotation - %s' % (object.name)) or 'Order - %s' % (object.name)</field>
+        <field name="binding_model_id" ref="model_sale_order"/>
+        <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="paperformat_package_label"/>
+    </record>
+
+</odoo>
