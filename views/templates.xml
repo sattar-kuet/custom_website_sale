@@ -213,7 +213,7 @@
                         </t>
                     </tbody>
                 </table>
-                <h2 style="text-align:center;">CONDITION: <t t-esc="doc.amount_total" />৳ ONLY </h2>
+                <h2 style="text-align:center;">CONDITION: <t t-esc="doc.amount_total" />BDT ONLY </h2>
             </div>
         </t>
     </template>
