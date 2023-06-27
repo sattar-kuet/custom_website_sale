@@ -88,7 +88,7 @@
                         </div>
 
                         <div id="portal_content" class="col-md-9">
-                            <t t-if="request.httprequest.path == '/my/home' or request.httprequest.path == '/my/orders' ">
+                            <t t-if="request.httprequest.path == '/my/home' or request.httprequest.path == '/my' or request.httprequest.path == '/my/orders' ">
                                 <t t-if="orders">
                                     <table class="table">
                                         <thead>
