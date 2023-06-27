@@ -6,6 +6,7 @@ from odoo.http import request
 
 class PortalCustomer(http.Controller):
     @http.route([
+        '''/my''',
         '''/my/home''',
         '''/my/orders''',
         '''/my/offer''',
@@ -18,10 +19,7 @@ class PortalCustomer(http.Controller):
         }
         current_url = request.httprequest.path
         if current_url == '/my/home' or current_url == '/my/orders':
-            user = request.env.user
             sale_orders = request.env['sale.order'].search([('partner_id', '=', request.env.user.partner_id.id)])
-
-
             orders = []
             for sale_order in sale_orders:
                 order_lines = sale_order.order_line.filtered(
