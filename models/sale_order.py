@@ -16,11 +16,15 @@ class SaleOrder(models.Model):
         default='pending',
         track_visibility='always'
     )
-    customer_phone = fields.Char('Customer Phone', compute='_compute_customer_phone', store="False")
+    customer_phone = fields.Char('Customer Phone', compute='_compute_customer_phone', store=False)
 
+    @api.depends('partner_id')
     def _compute_customer_phone(self):
         for record in self:
-            record.customer_phone = record.partner_id.phone
+            if record.partner_shipping_id:
+                record.customer_phone = record.partner_shipping_id.phone
+            else:
+                record.customer_phone = False
 
     @api.model
     def create(self, vals):
@@ -28,11 +32,15 @@ class SaleOrder(models.Model):
         return order
 
     def action_confirmed(self):
+        # for record in self:
+        #     # if record.delivery_status != 'pending':
+        #     #     raise exceptions.UserError("Status of all parcel must be 'Pending'")
         for record in self:
-            if record.delivery_status != 'pending':
-                raise exceptions.UserError("Status of all parcel must be 'Pending'")
-        for record in self:
-            record.delivery_status = 'confirmed'
+            customer = record.partner_shipping_id
+            print('*' * 100, customer.phone)
+            message = f"প্রিয় {customer.name}, আপনার অর্ডার টি গ্রহন করা হয়েছে। nilkhet24.com এর সাথে থাকার জন্য ধন্যবাদ।"
+            response = self.env['custom_website_sale.helper'].send_instant_sms(customer.phone, message)
+            print(response.text)
 
     def action_packaging_done(self):
         for record in self:

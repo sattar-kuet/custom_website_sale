@@ -155,12 +155,12 @@
 
             <t t-set="address">
                 <h2>To</h2>
-                <span t-esc="doc.partner_id.name"/>,<br/>
-                <span t-esc="doc.partner_id.phone"/>,<br/>
-                <span t-esc="doc.partner_id.street"/>,<br/>
-                <span t-esc="doc.partner_id.state_id.name"/>,<br/>
-                <span t-esc="doc.partner_id.city"/>,<br/>
-                <span t-esc="doc.partner_id.country_id.name"/>
+                <span t-esc="doc.partner_shipping_id.name"/>,<br/>
+                <span t-esc="doc.partner_shipping_id.street"/>,<br/>
+                <span t-esc="doc.partner_shipping_id.city"/>,
+                <span t-esc="doc.partner_shipping_id.state_id.name"/><br/>
+
+                <span style="font-weight:bold;" t-esc="doc.partner_shipping_id.phone"/><br/>
             </t>
 
             <div class="page">
@@ -171,13 +171,9 @@
                 </h2>
 
                 <div class="row mt32 mb32" id="informations">
-                    <div t-if="doc.date_order and doc.state not in ['draft','sent']" class="col-auto col-3 mw-100 mb-2">
+                    <div class="col-auto col-3 mw-100 mb-2">
                         <strong>Order Date:</strong>
                         <p class="m-0" t-field="doc.date_order"/>
-                    </div>
-                    <div t-if="doc.date_order and doc.state in ['draft','sent']" class="col-auto col-3 mw-100 mb-2">
-                        <strong>Quotation Date:</strong>
-                        <p class="m-0" t-field="doc.date_order" t-options='{"widget": "date"}'/>
                     </div>
                 </div>
                 <!-- Is there a discount on at least one line? -->
@@ -189,6 +185,8 @@
                         <tr>
                             <th name="th_description" class="text-left">Product</th>
                             <th name="th_quantity" class="text-right">Quantity</th>
+                            <th name="th_unit_price" class="text-right">Unit Price</th>
+                            <th name="th_total_price" class="text-right">Sub total</th>
                         </tr>
                     </thead>
                     <tbody class="sale_tbody">
@@ -205,15 +203,27 @@
                                         <td name="td_name"><span t-field="line.name"/></td>
                                         <td name="td_quantity" class="text-right">
                                             <span t-field="line.product_uom_qty"/>
-                                            <span t-field="line.product_uom"/>
+                                        </td>
+                                        <td name="td_unit_price" class="text-right">
+                                            <span t-field="line.price_subtotal" />
+                                        </td>
+                                        <td name="td_sub_total_price" class="text-right">
+                                            <span t-field="line.price_total" />
                                         </td>
                                     </t>
                                 </tr>
                             </t>
                         </t>
+                        <tr>
+                            <td colspan="3" style="font-weight:bold;" class="text-center"> Total</td>
+                            <td colspan="3" style="font-weight:bold;" class="text-right">
+                                <span t-field="doc.amount_total" t-options="{&quot;widget&quot;: &quot;monetary&quot;}" />
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
-                <h2 style="text-align:center;">CONDITION: <t t-esc="doc.amount_total" />BDT ONLY </h2>
+
+                <h3 style="text-align:center; font-style: italic;">NILKHET24.COM মানেই   ✔️সুলভ মূল্য     ✔️দ্রুত ডেলিভারী   ✔️লাস্ট মাইল ডেলিভারী</h3>
             </div>
         </t>
     </template>
