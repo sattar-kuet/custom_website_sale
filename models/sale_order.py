@@ -39,7 +39,7 @@ class SaleOrder(models.Model):
             customer = record.partner_shipping_id
             print('*' * 100, customer.phone)
             message = f"প্রিয় {customer.name}, আপনার অর্ডার টি গ্রহন করা হয়েছে। nilkhet24.com এর সাথে থাকার জন্য ধন্যবাদ।"
-            response = self.env['custom_website_sale.helper'].send_instant_sms(customer.phone, message)
+            response = self.env['custom_website_sale.helper'].send_normal_sms(customer.phone, message)
             print(response.text)
 
     def action_packaging_done(self):
