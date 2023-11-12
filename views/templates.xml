@@ -154,6 +154,9 @@
             <t t-set="doc" t-value="doc.with_context(lang=doc.partner_id.lang)" />
 
             <t t-set="address">
+                <br/>
+                <br/>
+                <br/>
                 <h2>To</h2>
                 <span t-esc="doc.partner_shipping_id.name"/>,<br/>
                 <span t-esc="doc.partner_shipping_id.street"/>,<br/>
@@ -224,6 +227,13 @@
                 </table>
 
                 <h3 style="text-align:center; font-style: italic;">NILKHET24.COM মানেই   ✔️সুলভ মূল্য     ✔️দ্রুত ডেলিভারী   ✔️লাস্ট মাইল ডেলিভারী</h3>
+              <br/>
+                <hr/>
+                <h2 class="text-center">লেখকের কিছু কথাঃ</h2>
+                <p class="text-center">
+                    আশা করছি বইটি সুখপাঠ্য হবে। আপনার জন্য আমার ইনস্ট্রাক্টরের   (www.amarinstructor.com ) সকল কোর্সে ৫০% ডিস্কাউন্ট এর একটি কুপন ( special-50 ) উপহার থাকল।  হ্যাপি লার্নিং 
+                </p>
+                <p class="text-right">--Abdus Sattar Bhuiyan</p>
             </div>
         </t>
     </template>
